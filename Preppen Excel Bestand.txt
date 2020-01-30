@@ -1,0 +1,19 @@
+Voor script:
+Find and Replace: \s met spatie
+Find and Replace: ... met spatie
+Find and Replace: ; met spatie
+Find and Replace: , met spatie
+Find and Replace: spatie spatie met spatie
+
+
+Na script:
+Find and Replace: spatie'Rijksoverheid.nl',spatie met spatie
+Find and Replace: spatie'WantToKnow.nl',spatie met spatie
+Find and Replace: spatie'politie.nl',spatie met spatie
+Find and Replace: spatie'Amerika.nl',spatie met spatie
+Find and Replace: spatie'klimaat.be',spatie met spatie
+Find and Replace: spatie'AD.nl',spatie met spatie
+Find and Replace: spatie'Rijksvaccinatieprogramma.nl',spatie met spatie
+Find and Replace: spatie'allesoverseks.be',spatie met spatie
+Find and Replace: spatie'LNE.be',spatie met spatie
+Find and Replace: spatie'Thuisvaccinatie.nl',spatie met spatie
