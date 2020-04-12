@@ -14,7 +14,7 @@ controversial_counter = 0
 noncontroversial_counter = 0
 
 
-data = pd.read_excel(r'C:\Users\Roland Leferink\PycharmProjects\scriptie\test.xlsx', sheet_name='Controversieel')
+data = pd.read_excel(r'..\PycharmProjects\scriptie\test.xlsx', sheet_name='Controversieel')
 df = pd.DataFrame(data, columns=["Abortus tot hoeveel weken?","Oorzaken klimaatverandering","Zwarte piet of roetveegpiet?","Gevaren vaccinaties","Gevolgen illegale immigratie"])
 df = df.rename(columns={"Abortus tot hoeveel weken?": 1, "Oorzaken klimaatverandering": 2, "Zwarte piet of roetveegpiet?": 3, "Gevaren vaccinaties": 4, "Gevolgen illegale immigratie": 5})
 df.to_excel('ControversialData.xlsx')
@@ -56,7 +56,7 @@ for i in range(len(df)):
 df.to_excel('ControversialResults.xlsx')
 
 
-data = pd.read_excel(r'C:\Users\Roland Leferink\PycharmProjects\scriptie\test.xlsx', sheet_name='Niet Controversieel')
+data = pd.read_excel(r'..\PycharmProjects\scriptie\test.xlsx', sheet_name='Niet Controversieel')
 df = pd.DataFrame(data, columns=["Brood bakken recept", "Honden namen", "Wat is het grootste bot in het menselijk lichaam?", "Hoeveel van een komkommer is water?", "Hoeveel mensen wonen er in Nederland?"])
 df = df.rename(columns={"Brood bakken recept": 1, "Honden namen": 2, "Wat is het grootste bot in het menselijk lichaam?": 3, "Hoeveel van een komkommer is water?": 4, "Hoeveel mensen wonen er in Nederland?": 5})
 df.to_excel('NonControversialData.xlsx')
