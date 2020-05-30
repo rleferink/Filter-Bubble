@@ -19,6 +19,8 @@ locations = ['Buiten Nederland', 'Drenthe', 'Flevoland', 'Friesland', 'Gelderlan
 parties = ['CDA', 'ChristenUnie', 'DENK', 'D66', 'FvD', 'GroenLinks', 'Niet', 'PvdA', 'PvdD', 'PVV', 'SGP', 'SP', '50PLUS', 'VVD'] #14 groups
 spectrumLeft = ['DENK', 'D66', 'GroenLinks', 'PvdA', 'PvdD', 'SP']
 spectrumRight = ['CDA', 'ChristenUnie', 'FvD', 'PVV', 'SGP', '50PLUS', 'VVD']
+controversialTopics = ['Abortus', 'Klimaatverandering', 'Zwartepiet', 'Vaccinaties', 'Immigratie']
+normalTopics = ['Brood', 'Honden', 'Bot', 'Komkommer', 'Inwoners']
 #The different groups in the category of age
 #ControversialAgeDistances: CAD
 CAD0 = []
@@ -104,6 +106,18 @@ NSDRight = []
 CD = []
 #NormalDistance: ND
 ND = []
+#ControversialTopicDistance: CTD
+CTD0 = []
+CTD1 = []
+CTD2 = []
+CTD3 = []
+CTD4 = []
+#NormalTopicDistance: NTD
+NTD0 = []
+NTD1 = []
+NTD2 = []
+NTD3 = []
+NTD4 = []
 #Lists of all groups:
 CAD = [CAD0, CAD1, CAD2, CAD3, CAD4, CAD5]
 NAD = [NAD0, NAD1, NAD2, NAD3, NAD4, NAD5]
@@ -113,6 +127,8 @@ CPD = [CPD0, CPD1, CPD2, CPD3, CPD4, CPD5, CPD6, CPD7, CPD8, CPD9, CPD10, CPD11,
 NPD = [NPD0, NPD1, NPD2, NPD3, NPD4, NPD5, NPD6, NPD7, NPD8, NPD9, NPD10, NPD11, NPD12, NPD13]
 CSD = [CSDLeft, CSDRight]
 NSD = [NSDLeft, NSDRight]
+CTD = [CTD0, CTD1, CTD2, CTD3, CTD4]
+NTD = [NTD0, NTD1, NTD2, NTD3, NTD4]
 #Average of the groups
 CADAverage = []
 NADAverage = []
@@ -126,9 +142,21 @@ CSDLeftAverage = 0
 CSDRightAverage = 0
 NSDLeftAverage = 0
 NSDRightAverage = 0
+CTDAverage = []
+NTDAverage = []
 
 def Average(lst):
     return sum(lst) / len(lst)
+
+def Similarity(lst1, lst2):
+    similarity = 0
+    similarElements = []
+    for listElement in lst1:
+        if listElement in lst2:
+            if listElement not in similarElements:
+                similarElements.append(listElement)
+                similarity += 1
+    return similarity
 
 
 #Levenshtein distance based on age
@@ -415,7 +443,55 @@ for i in partySheetNames:
                     else:
                         NSDRight.append(distance)
 
-
+#Levenshtein distance based on search query.
+for i in ageSheetNames:
+    data = pd.read_excel("LevenshteinData.xlsx", sheet_name=i)
+    if i == "Controversieel Leeftijd":
+        df = pd.DataFrame(data, columns=["Wat is uw leeftijd?", "Abortus tot hoeveel weken?", "Oorzaken klimaatverandering","Zwarte piet of roetveegpiet?", "Gevaren vaccinaties","Gevolgen illegale immigratie"])
+        df = df.rename(columns={"Wat is uw leeftijd?": 1, "Abortus tot hoeveel weken?": 2, "Oorzaken klimaatverandering": 3,"Zwarte piet of roetveegpiet?": 4, "Gevaren vaccinaties": 5, "Gevolgen illegale immigratie": 6})
+    else:
+        df = pd.DataFrame(data, columns=["Wat is uw leeftijd?", "Brood bakken recept", "Honden namen","Wat is het grootste bot in het menselijk lichaam?","Hoeveel van een komkommer is water?","Hoeveel mensen wonen er in Nederland?"])
+        df = df.rename(columns={"Wat is uw leeftijd?": 1, "Brood bakken recept": 2, "Honden namen": 3,"Wat is het grootste bot in het menselijk lichaam?": 4,"Hoeveel van een komkommer is water?": 5, "Hoeveel mensen wonen er in Nederland?": 6})
+    for x in range(len(df)):
+        for y in range(2, 7):
+            stringOfWebsites = df.loc[x, y]
+            websiteList = re.split("\s", stringOfWebsites)
+            websiteList = websiteList[:smallestWebsiteList]
+            for z in websiteList:
+                if z not in allWebsites:
+                    allWebsites.append(z)
+            for xx in range(len(df)):
+                if x == xx:
+                    pass
+                elif x > xx:
+                    pass
+                else:
+                    stringOfComparingWebsites = df.loc[xx, y]
+                    comparingWebsiteList = re.split("\s", stringOfComparingWebsites)
+                    comparingWebsiteList = comparingWebsiteList[:smallestWebsiteList]
+                    distance = td.levenshtein.distance(websiteList, comparingWebsiteList)
+                    if i == "Controversieel Leeftijd":
+                        if y == 2:
+                            CTD0.append(distance)
+                        elif y == 3:
+                            CTD1.append(distance)
+                        elif y == 4:
+                            CTD2.append(distance)
+                        elif y == 5:
+                            CTD3.append(distance)
+                        elif y == 6:
+                            CTD4.append(distance)
+                    else:
+                        if y == 2:
+                            NTD0.append(distance)
+                        elif y == 3:
+                            NTD1.append(distance)
+                        elif y == 4:
+                            NTD2.append(distance)
+                        elif y == 5:
+                            NTD3.append(distance)
+                        elif y == 6:
+                            NTD4.append(distance)
 
 #Make averages of the groups
 for x in CAD:
@@ -454,6 +530,18 @@ for x in NPD:
         NPDAverage.append(y)
     else:
         NPDAverage.append(0)
+for x in CTD:
+    if x != []:
+        y = Average(x)
+        CTDAverage.append(y)
+    else:
+        CTDAverage.append(0)
+for x in NTD:
+    if x != []:
+        y = Average(x)
+        NTDAverage.append(y)
+    else:
+        NTDAverage.append(0)
 CDAverage = Average(CD)
 NDAverage = Average(ND)
 CSDLeftAverage = Average(CSDLeft)
@@ -510,6 +598,18 @@ print("Controversial:")
 print(f'Average distance Left: {CSDLeftAverage}\nAverage distance Right: {CSDRightAverage}\n')
 print("Normal:")
 print(f'Average distance Left: {NSDLeftAverage}\nAverage distance Right: {NSDRightAverage}\n')
+
+print("Sorted By Topic:")
+if rawResults:
+    print("Controversial:")
+    print(f'Distances between {controversialTopics[0]}: {CTD0}\nDistances between {controversialTopics[1]}: {CTD1}\nDistances between {controversialTopics[2]}: {CTD2}\nDistances between {controversialTopics[3]}: {CTD3}\nDistances between {controversialTopics[4]}: {CTD4}\n')
+    print("Normal:")
+    print(f'Distances between {normalTopics[0]}: {NTD0}\nDistances between {normalTopics[1]}: {NTD1}\nDistances between {normalTopics[2]}: {NTD2}\nDistances between {normalTopics[3]}: {NTD3}\nDistances between {normalTopics[4]}: {NTD4}\n')
+print("Averages of the topics:")
+print("Controversial:")
+print(f'Average distance for {controversialTopics[0]}: {CTDAverage[0]}\nAverage distance for {controversialTopics[1]}: {CTDAverage[1]}\nAverage distance for {controversialTopics[2]}: {CTDAverage[2]}\nAverage distance for {controversialTopics[3]}: {CTDAverage[3]}\nAverage distance for {controversialTopics[4]}: {CTDAverage[4]}\n')
+print("Normal:")
+print(f'Average distance for {normalTopics[0]}: {NTDAverage[0]}\nAverage distance for {normalTopics[1]}: {NTDAverage[1]}\nAverage distance for {normalTopics[2]}: {NTDAverage[2]}\nAverage distance for {normalTopics[3]}: {NTDAverage[3]}\nAverage distance for {normalTopics[4]}: {NTDAverage[4]}\n')
 
 
 print(allWebsites)
