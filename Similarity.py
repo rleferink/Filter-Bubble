@@ -151,12 +151,10 @@ def Average(lst):
 
 def SimilarityCalc(lst1, lst2):
     similarity = 0
-    similarElements = []
     for listElement in lst1:
         if listElement in lst2:
-            if listElement not in similarElements:
-                similarElements.append(listElement)
-                similarity += 1
+            lst2.remove(listElement)
+            similarity += 1
     return similarity
 
 #Only keep first 8 elements of list Niet Controversieel
@@ -477,7 +475,7 @@ for i in ageSheetNames:
     if i == "Controversieel Leeftijd":
         df = pd.DataFrame(data, columns=["Wat is uw leeftijd?", "Abortus tot hoeveel weken?", "Oorzaken klimaatverandering","Zwarte piet of roetveegpiet?", "Gevaren vaccinaties","Gevolgen illegale immigratie"])
         df = df.rename(columns={"Wat is uw leeftijd?": 1, "Abortus tot hoeveel weken?": 2, "Oorzaken klimaatverandering": 3,"Zwarte piet of roetveegpiet?": 4, "Gevaren vaccinaties": 5, "Gevolgen illegale immigratie": 6})
-    else:
+    elif i == "Niet Controversieel Leeftijd":
         df = pd.DataFrame(data, columns=["Wat is uw leeftijd?", "Brood bakken recept", "Honden namen","Wat is het grootste bot in het menselijk lichaam?","Hoeveel van een komkommer is water?","Hoeveel mensen wonen er in Nederland?"])
         df = df.rename(columns={"Wat is uw leeftijd?": 1, "Brood bakken recept": 2, "Honden namen": 3,"Wat is het grootste bot in het menselijk lichaam?": 4,"Hoeveel van een komkommer is water?": 5, "Hoeveel mensen wonen er in Nederland?": 6})
     for x in range(len(df)):
