@@ -1,6 +1,9 @@
 import pandas as pd
 import textdistance as td
 import re
+import statistics
+import numpy as np
+from scipy import stats
 
 ageSheetNames = ("Controversieel Leeftijd", "Niet Controversieel Leeftijd")
 locationSheetNames = ("Controversieel Locatie", "Niet Controversieel Locatie")
@@ -9,7 +12,7 @@ columnNamesControversial = ("Abortus tot hoeveel weken?","Oorzaken klimaatverand
 columnNamesNonControversial = ("Brood bakken recept", "Honden namen", "Wat is het grootste bot in het menselijk lichaam?", "Hoeveel van een komkommer is water?", "Hoeveel mensen wonen er in Nederland?")
 smallestWebsiteList = 8
 comparisons = 0
-rawResults = False
+rawResults = True
 allWebsites = []
 
 
@@ -548,6 +551,22 @@ CSDLeftAverage = Average(CSDLeft)
 CSDRightAverage = Average(CSDRight)
 NSDLeftAverage = Average(NSDLeft)
 NSDRightAverage = Average(NSDRight)
+#ControversialStandardDeviation = statistics.stdev(CD)
+ControversialStandardDeviation = np.std(CD)
+#NormalStandardDeviation = statistics.stdev(ND)
+NormalStandardDeviation = np.std(ND)
+#ControversialMean = statistics.mean(CD)
+ControversialMean = np.mean(CD)
+#NormalMean = statistics.mean(ND)
+NormalMean = np.mean(ND)
+#ControversialVariance = statistics.variance(CD, ControversialMean)
+ControversialVariance = np.var(CD)
+#NormalVariance = statistics.variance(ND, NormalMean)
+NormalVariance = np.var(ND)
+ControversialSize = len(CD)
+NormalSize = len(ND)
+EqualTtest = stats.ttest_ind(ND, CD)
+UnEqualTtest = stats.ttest_ind(ND, CD, equal_var= False)
 
 print("Sorted By Age:")
 if rawResults:
@@ -588,9 +607,25 @@ print(f'Average distance for {parties[0]}: {NPDAverage[0]}\nAverage distance for
 print("Unsorted:")
 print("Average:")
 print("Controversial:")
-print(f'Average distance: {CDAverage}\n')
-print("Normal:")
-print(f'Average distance: {NDAverage}\n')
+
+if rawResults:
+    print(f'Controversial size: {ControversialSize}')
+    print(f'Average distance: {CDAverage}')
+    print(f'Distances between Controversial: {CD}')
+    print(f'Controversial mean: {ControversialMean}')
+    print(f'Controversial variance: {ControversialVariance}')
+    print(f'Controversial standard deviation: {ControversialStandardDeviation}\n')
+    print("Normal:")
+    print(f'Normal size: {NormalSize}')
+    print(f'Average distance: {NDAverage}')
+    print(f'Distances between Normal: {ND}')
+    print(f'Normal mean: {NormalMean}')
+    print(f'Normal variance: {NormalVariance}')
+    print(f'Normal standard deviation: {NormalStandardDeviation}\n')
+else:
+    print(f'Average distance: {CDAverage}\n')
+    print("Normal:")
+    print(f'Average distance: {NDAverage}\n')
 
 print("Political Spectrum:")
 print("Average:")
@@ -611,5 +646,7 @@ print(f'Average distance for {controversialTopics[0]}: {CTDAverage[0]}\nAverage 
 print("Normal:")
 print(f'Average distance for {normalTopics[0]}: {NTDAverage[0]}\nAverage distance for {normalTopics[1]}: {NTDAverage[1]}\nAverage distance for {normalTopics[2]}: {NTDAverage[2]}\nAverage distance for {normalTopics[3]}: {NTDAverage[3]}\nAverage distance for {normalTopics[4]}: {NTDAverage[4]}\n')
 
+print(f'T-test Equal variance: {EqualTtest}')
+print(f'T-test Unequal variance: {UnEqualTtest}')
 
 print(allWebsites)
